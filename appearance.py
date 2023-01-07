@@ -472,7 +472,7 @@ class Playboard:
                     if i[0] in HIT_DIRECTIONS[field_name[0]].keys():
                         self.__jump_forward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) - 2)
                         self.__jump_backward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) + 2)
-                    if i in step_forward and self.__jump_forward not in self.__items_white:
+                    if i in step_forward and self.__jump_forward not in self.__items_white and self._Bforward_jump = 1:
                         result.clear()
                         result.append(self.__jump_forward)
                         if self.__jump_forward == self.__field_cell:
@@ -483,7 +483,7 @@ class Playboard:
                                     return result
                         else:
                             return result
-                    if i in step_backward and self.__jump_backward not in self.__items_white:
+                    if i in step_backward and self.__jump_backward not in self.__items_white and self._Bback_jump = 1:
                         step_backward.clear()
                         step_backward.append(self.__jump_backward)
                         if self.__jump_backward == self.__field_cell:
@@ -581,11 +581,13 @@ class Playboard:
                                         self.__jump_forward in FIELD:
                                     self.__active_Bcheckers.append(field)
                                     self.__field = field
+                                    self._Bforward_jump = 1
                                 if any_checker in back and self.__jump_backward not in self.__items_black and \
                                         self.__jump_backward not in self.__items_white and \
                                         self.__jump_backward in FIELD:
                                     self.__active_Bcheckers.append(field)
                                     self.__field = field
+                                    self._Bback_jump = 1
                     except Exception:
                         break
             if len(self.__active_Bcheckers) == 1:
