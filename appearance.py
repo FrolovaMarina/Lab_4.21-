@@ -172,10 +172,10 @@ class Playboard:
                 self.__field_cell = cells.field_name
                 self.__jump_forward = []
                 self.__jump_backward = []
+                #если ход белых 
                 if self.__next_turn == 'white' and self.__checker_colour == Checker1.icolour:
-                    # проверяем, если ли рядом с какой-то шашкой шашка противника
                     self.__CHECK_HITTING = self.__check_hitting()
-                    # дамки 
+                    # для дамки 
                     if self.__field_checker in self.__queens_white:
                         variants = self.__move_queens(self.__field_checker)
                         self.__qCHECK_HITTING = self.__qcheck_hitting()
@@ -207,6 +207,7 @@ class Playboard:
                         self.__wchecker_step(cells)
                     else:
                         self.__picked_checker = None
+                #если ход чёрных 
                 elif self.__next_turn == 'black' and self.__checker_colour == Checker2.icolour:
                     self.__CHECK_HITTING = self.__check_hitting()
                     if self.__field_checker in self.__queens_white:
@@ -318,7 +319,7 @@ class Playboard:
             self.__next_turn = 'white'
         print("Ход сделан!")
 
-    #если обычный ход белых    
+    #если обычный ход белой шашки     
     def __move_wcheckers(self, field_name):
         directions = DIRECTIONS[field_name[0]]
         moves = list(map(lambda el: el + str(int(field_name[1]) + 1), directions))
@@ -453,7 +454,7 @@ class Playboard:
                 else:
                     return step
 
-    #если обычный ход чёрных            
+    #если обычный ход чёрной шашки             
     def __move_bcheckers(self, field_name):
         directions = DIRECTIONS[field_name[0]]
         moves = list(map(lambda el: el + str(int(field_name[1]) - 1), directions))
