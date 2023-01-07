@@ -34,6 +34,7 @@ class Playboard:
 
         pg.display.update()
 
+    #фон     
     def __background(self):
         background_image = pg.image.load('images/' + 'Ametist.jpg')
         background_image = pg.transform.scale(background_image, WINDOW_SIZE)
@@ -45,7 +46,6 @@ class Playboard:
         numbers_fields = self.__numbers_fields()
         self.__cells_sprite = self.__create_cells()
         # сами игровые поля
-        #fields = self.__create_cells()
         width = numbers_fields[0].get_width()
         board_view = pg.Surface((2 * width + total_size, 2 * width + total_size), pg.SRCALPHA)
 
@@ -65,7 +65,6 @@ class Playboard:
         self.__screen.blit(board_view, board_rect)
         cells_direction = (board_rect.x + width, board_rect.y + width)
         self.__draw_cells(cells_direction)
-        print("uuuuuu")
 
     def __numbers_fields(self):
         n_lines = pg.Surface((self.__count * self.__size, self.__size // 2), pg.SRCALPHA)
@@ -75,9 +74,9 @@ class Playboard:
             letters = font.render(names[i], 1, WHITE)
             number = font.render(str(self.__count - i), 1, WHITE)
             n_lines.blit(letters, (i * self.__size + (self.__size - letters.get_rect().width) // 2,
-                                   (n_lines.get_height() - letters.get_rect().height) // 2))  # для x, y
+                                   (n_lines.get_height() - letters.get_rect().height) // 2)) 
             n_rows.blit(number, ((n_rows.get_width() - letters.get_rect().width) // 2,
-                                 i * self.__size + (self.__size - number.get_rect().height) // 2))  # для x, y
+                                 i * self.__size + (self.__size - number.get_rect().height) // 2)) 
         return n_rows, n_lines
 
     def __create_cells(self):
@@ -87,7 +86,6 @@ class Playboard:
         # отрисовка ячеек
         for y in range(self.__count):
             for x in range(self.__count):
-                # cells.fill(COLOURS[cell_colour_index])
                 cells = Cells(cell_colour_index, self.__size, (x, y), names[x] + str(self.__count - y))
                 group.add(cells)
                 cell_colour_index ^= True
@@ -136,7 +134,6 @@ class Playboard:
         return None
 
     def button_down(self, button_type: int, position: tuple):
-        #x, y = (event.x) // CELL_SIZE, (event.y) // CELL_SIZE
         self.__pressed_cell = self.__get_cell(position)
 
     def button_up(self, button_type: int, position: tuple):
@@ -156,7 +153,6 @@ class Playboard:
         return self.__items_white, self.__items_black
 
     def __update(self):
-        #print("obnovochka")
         print(" ")
         self.__cells_sprite.draw(self.__screen)
         self.__items_sprite.draw(self.__screen)
@@ -170,76 +166,60 @@ class Playboard:
                     self.__picked_checker = item
                     self.__field_checker = item.field_name
                     self.__checker_colour = item.icolour
-                    #print("om", item.field_name)
                     break
         else:
-            #print("o start!")
             if cells.colour == 0:
                 self.__field_cell = cells.field_name
                 self.__jump_forward = []
                 self.__jump_backward = []
                 if self.__next_turn == 'white' and self.__checker_colour == Checker1.icolour:
-                    print("1 Kyda", self.__field_cell, "какой шашкой", self.__field_checker)
-                    # проверяем, если ли рядом с какой-то шашкой - шашка противника
-                    # и если есть, то это шашка при возможности будет ходить в self.__hiting_move_wcheckers
+                    # проверяем, если ли рядом с какой-то шашкой шашка противника
                     self.__CHECK_HITTING = self.__check_hitting()
-                    #self.__qCHECK_HITTING = self.__qcheck_hitting()
-                    # дамка
+                    # дамки 
                     if self.__field_checker in self.__queens_white:
                         variants = self.__move_queens(self.__field_checker)
                         self.__qCHECK_HITTING = self.__qcheck_hitting()
                         if self.__wqCHECK is True:
-                            print("self.__field", self.__field)
                             if cells.field_name in self.__hiting_move_wqueens(self.__qCHECK_HITTING) and \
                                     self.__picked_checker.field_name == self.__field_checker and \
                                     cells.field_name not in self.__items_white:
-                                print("тады дамкой бьём, если могём")
                                 self.__wchecker_step(cells)
                             else:
                                 self.__picked_checker = None
                         elif self.__field_cell in variants and self.__wCHECK is False:
-                            print("^-^")
-                            print("Куда ткнули?", self.__field_cell)
                             self.__wchecker_step(cells)
                         elif self.__wCHECK is False:
                             self.__qcheck_hitting()
                         else:
                             self.__picked_checker = None
-                    print("бПроверка хода:", self.__wCHECK)
                     if self.__wCHECK is True and self.__wqCHECK is False:
                         if len(self.__active_Wcheckers) >= 2:
                             self.__CHECK_HITTING = self.__field_checker
                         if cells.field_name in self.__hiting_move_wcheckers(self.__CHECK_HITTING) and\
                                 self.__picked_checker.field_name == self.__field_checker and\
                                 cells.field_name not in self.__items_white:
-                            print("тады белыми бьём, если могём")
                             self.__wchecker_step(cells)
                         else:
                             self.__picked_checker = None
                     elif cells.field_name in self.__move_wcheckers(self.__field_checker) and \
                             cells.field_name not in self.__items_white and self.N == 0:
-                        print("Delaem обычный ход")
+                        print("Делaem обычный ход")
                         self.__wchecker_step(cells)
                     else:
                         self.__picked_checker = None
                 elif self.__next_turn == 'black' and self.__checker_colour == Checker2.icolour:
-                    print("2 Kyda", self.__field_cell)
                     self.__CHECK_HITTING = self.__check_hitting()
                     if self.__field_checker in self.__queens_white:
                         variants = self.__move_queens(self.__field_checker)
                         self.__qCHECK_HITTING = self.__qcheck_hitting()
                         if self.__bqCHECK is True:
-                            print("self.__field", self.__field)
                             if cells.field_name in self.__hiting_move_bqueens(self.__qCHECK_HITTING) and \
                                     self.__picked_checker.field_name == self.__field_checker and \
                                     cells.field_name not in self.__items_black:
-                                print("тады дамкой бьём, если могём")
                                 self.__bchecker_step(cells)
                             else:
                                 self.__picked_checker = None
                         elif self.__field_cell in variants and self.__bCHECK is False:
-                            print("^-^")
-                            print("Куда ткнули?", self.__field_cell)
                             self.__bchecker_step(cells)
                         elif self.__bCHECK is False:
                             self.__qcheck_hitting()
@@ -251,28 +231,27 @@ class Playboard:
                         if cells.field_name in self.__hiting_move_bcheckers(self.__CHECK_HITTING) and \
                                 self.__picked_checker.field_name == self.__field_checker and \
                                 cells.field_name not in self.__items_black:
-                            print("тады чёрными бьём, если могём")
                             self.__bchecker_step(cells)
                         else:
                             self.__picked_checker = None
                     elif cells.field_name in self.__move_bcheckers(self.__field_checker) and\
                             cells.field_name not in self.__items_black and self.N == 0:
-                        print("Delaem обычный ход")
+                        print("Делaem обычный ход")
                         self.__bchecker_step(cells)
-                        #print("Куда:", cells.field_name, "/Откуда:", self.__field_checker,
-                            #"/ВОЗМОЖНЫЕ ХОДЫ", self.__move_white_checkers(self.__field_checker))
                     else:
                         self.__picked_checker = None
                 else:
                     self.__picked_checker = None
 
+    #победа чёрных                
     def __black_win(self):
         win = pg.display.set_mode((200, 70))
         win.fill((167, 200, 250))
         text_surface = font.render('Чёрные выиграли!', True, (75, 0, 130))
         win.blit(text_surface, (45, 30))
         self.__screen.blit(win, (200, 200))
-
+        
+    #победа белых
     def __white_win(self):
         win = pg.display.set_mode((200, 70))
         win.fill((237, 186, 245))
@@ -280,6 +259,7 @@ class Playboard:
         win.blit(text_surface, (45, 30))
         self.__screen.blit(win, (200, 200))
 
+    #ход белых    
     def __wchecker_step(self, cells):
         print("Ход на поле", cells.field_name)
         self.__picked_checker.rect = cells.rect
@@ -288,20 +268,15 @@ class Playboard:
         self.__items_white.append(cells.field_name)
         if self.__picked_checker.field_name in WHITE_QUEEN_FIELD and\
                 self.__field_checker not in self.__queens_white:
-            print("У НАС ЕСТЬ ДАМКА!!")
             self.__transform_to_queen(self.__picked_checker.field_name)
         elif self.__field_checker in self.__queens_white:
-            print("self.__field_checker:", self.__field_checker,
-                  "/ cells.field_name:", cells.field_name)
             self.__queens_white.remove(self.__field_checker)
             self.__queens_white.append(cells.field_name)
         if not self.__items_black:
             self.__black_win()
         if self.__wCHECK is True:
             if cells.colour == 0 and self.__checker_colour == Checker1.icolour:
-                print("1.0 Kyda", self.__field_cell)
                 self.__check_hitting()
-                print("1.1", self.__wCHECK)
                 if self.__wCHECK is True:
                     self.__picked_checker = None
                     self.N = 1
@@ -313,24 +288,23 @@ class Playboard:
             self.N = 0
             self.__picked_checker = None
             self.__next_turn = 'black'
-        print("Ход белых сделан!")
+        print("Ход сделан!")
 
+    #ход чёрных    
     def __bchecker_step(self, cells):
         print("Ход на поле", cells.field_name)
         self.__picked_checker.rect = cells.rect
         self.__items_black.remove(self.__picked_checker.field_name)
         self.__picked_checker.field_name = cells.field_name
         self.__items_black.append(cells.field_name)
-        if self.__picked_checker.field_name in BLACK_QUEEN_FIELD:
-            print("У НАС ЕСТЬ ДАМКА!!")
+        if self.__picked_checker.field_name in BLACK_QUEEN_FIELD and\
+                self.__field_checker not in self.__queens_black:
             self.__transform_to_queen(self.__picked_checker.field_name)
         if not self.__items_white:
             self.__white_win()
         if self.__bCHECK is True:
             if cells.colour == 0 and self.__checker_colour == Checker2.icolour:
-                print("2.0 Kyda", self.__field_cell)
                 self.__check_hitting()
-                print("2.1", self.__bCHECK)
                 if self.__bCHECK is True:
                     self.__picked_checker = None
                     self.N = 1
@@ -342,13 +316,15 @@ class Playboard:
             self.N = 0
             self.__picked_checker = None
             self.__next_turn = 'white'
-        print("Ход чёрных сделан!")
+        print("Ход сделан!")
 
+    #если обычный ход белых    
     def __move_wcheckers(self, field_name):
         directions = DIRECTIONS[field_name[0]]
         moves = list(map(lambda el: el + str(int(field_name[1]) + 1), directions))
         return moves
 
+    #если обычный ход дамки   
     def __move_queens(self, field_name):
         self.__diagonal_1 = []
         self.__diagonal_2 = []
@@ -357,12 +333,9 @@ class Playboard:
         variants = []
         self.__all = []
         q = QUEEN_DIRECTIONS[field_name[0]]
-        print("STRADATB", q)
         n = 0
         while n < len(q):
             for i in range(1, len(q) + 1):
-                #print("2", QUEEN_DIRECTIONS[field_name[0]], list(str(int(field_name[1]) + i)))
-                #print("3", list(map(lambda el: el + str(int(field_name[1]) + i), QUEENS_DIRECTIONS[field_name[0]])))
                 try:
                     self.__q_moves1 = list(map(lambda el: el + str(int(field_name[1]) + i), q[n]))
                     self.__q_moves2 = list(map(lambda el: el + str(int(field_name[1]) - i), q[n]))
@@ -393,29 +366,24 @@ class Playboard:
                 except Exception:
                     pass
                 n += 1
-        #print("Варианты обычного хода", variants)
         return variants
 
+    #если ход белых = взятие  
     def __hiting_move_wcheckers(self, field_name):
-        print("на какую шашку ткнули", self.__field_checker, "а должна ходить", field_name)
         if self.__field_checker not in self.__active_Wcheckers:
             return field_name
         step_backward = list(map(lambda el: el + str(int(field_name[1]) - 1), DIRECTIONS[field_name[0]]))
         step_forward = self.__move_wcheckers(field_name)
         result = step_forward + step_backward
-        print("step_forward", step_forward, "step_backward", step_backward)
         for i in result:
             if i in self.__items_black:
-                #result.remove(i)
                 try:
                     if i[0] in HIT_DIRECTIONS[field_name[0]].keys():
                         self.__jump_forward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) + 2)
                         self.__jump_backward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) - 2)
-                    print("Вражеская шашка на", i)
                     if i in step_forward and self._Wforward_jump == 1 and self.__jump_forward not in self.__items_black:
                         result.clear()
                         result.append(self.__jump_forward)
-                        print("доступные ходы в таком случае", result)
                         if self.__jump_forward == self.__field_cell:
                             for item in self.__items_sprite:
                                 if item.field_name == i:
@@ -426,7 +394,6 @@ class Playboard:
                             return result
                     elif i in step_backward and self._Wback_jump == 1 and self.__jump_backward not in self.__items_black:
                         step_backward.append(self.__jump_backward)
-                        print("Dоступные ходы в таком случае", step_backward)
                         if self.__jump_backward == self.__field_cell:
                             for item in self.__items_sprite:
                                 if item.field_name == i:
@@ -440,8 +407,8 @@ class Playboard:
                 except Exception:
                     break
 
+    #если ход белой дамки = взятие               
     def __hiting_move_wqueens(self, field_name):
-        print("на какую шашку ткнули", self.__field_checker, "а должна ходить", field_name)
         if self.__field_checker not in self.__active_Wqueens:
             return field_name
         step = self.__move_queens(field_name)
@@ -455,7 +422,6 @@ class Playboard:
                 step.append(hit)
                 if self.__field_cell in hit and self.__field_cell != self.Q and\
                         self.__field_cell not in self.__items_white:
-                    print("берём")
                     for item in self.__items_sprite:
                         if item.field_name == i:
                             self.__items_sprite.remove(item)
@@ -464,8 +430,8 @@ class Playboard:
                 else:
                     return step
 
+    #если ход чёрной дамки = взятие            
     def __hiting_move_bqueens(self, field_name):
-        print("на какую шашку ткнули", self.__field_checker, "а должна ходить", field_name)
         if self.__field_checker not in self.__active_Bqueens:
             return field_name
         step = self.__move_queens(field_name)
@@ -479,7 +445,6 @@ class Playboard:
                 step.append(hit)
                 if self.__field_cell in step and self.__field_cell != self.Q and\
                         self.__field_cell not in self.__items_black:
-                    print("берём")
                     for item in self.__items_sprite:
                         if item.field_name == i:
                             self.__items_sprite.remove(item)
@@ -488,13 +453,14 @@ class Playboard:
                 else:
                     return step
 
+    #если обычный ход чёрных            
     def __move_bcheckers(self, field_name):
         directions = DIRECTIONS[field_name[0]]
         moves = list(map(lambda el: el + str(int(field_name[1]) - 1), directions))
         return moves
 
+    #если ход чёрных = взятие
     def __hiting_move_bcheckers(self, field_name):
-        print("на какую шашку ткнули", self.__field_checker, "а должна ходить", field_name)
         if self.__field_checker not in self.__active_Bcheckers:
             return field_name
         step_backward = list(map(lambda el: el + str(int(field_name[1]) + 1), DIRECTIONS[field_name[0]]))
@@ -506,11 +472,9 @@ class Playboard:
                     if i[0] in HIT_DIRECTIONS[field_name[0]].keys():
                         self.__jump_forward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) - 2)
                         self.__jump_backward = HIT_DIRECTIONS[field_name[0]][i[0]] + str(int(field_name[1]) + 2)
-                    print("чужая шашка на", i)
                     if i in step_forward and self.__jump_forward not in self.__items_white:
                         result.clear()
                         result.append(self.__jump_forward)
-                        print("Dоступные ходы в таком случае", result)
                         if self.__jump_forward == self.__field_cell:
                             for item in self.__items_sprite:
                                 if item.field_name == i:
@@ -520,12 +484,8 @@ class Playboard:
                         else:
                             return result
                     if i in step_backward and self.__jump_backward not in self.__items_white:
-                        #     self.__jump_backward not in self.__items_black and\
-                        # self.__jump_backward not in self.__items_white and\
-                        #     self.__jump_backward in FIELD:
                         step_backward.clear()
                         step_backward.append(self.__jump_backward)
-                        print("доступные ходы в таком случае", step_backward)
                         if self.__jump_backward == self.__field_cell:
                             for item in self.__items_sprite:
                                 if item.field_name == i:
@@ -535,10 +495,8 @@ class Playboard:
                         else:
                             return step_backward
                     else:
-                        print("отменить это всё нафиг, пусть ходит какая угодно шашка)")
                         continue
                 except Exception:
-                    print("2 Да ну нельзя так ходить 2", Exception)
                     break
 
     def __create_a_queen(self, item_symbol: str):
@@ -547,11 +505,10 @@ class Playboard:
         classname = globals()[item_tuple[0]]
         return classname(self.__size, item_tuple[0], field_name)
 
+    #превращение в дамку 
     def __transform_to_queen(self, field_name):
-        print("Пытаемся поставить дамку")
         for item in self.__items_sprite:
             if item.field_name == field_name:
-                print("Ставим дамку мы тогда", field_name)
                 self.__items_sprite.remove(item)
                 for k in types.keys():
                     if k == 'Q' and item.field_name in self.__items_white:
@@ -569,6 +526,7 @@ class Playboard:
                         self.__items_black.append(queen.field_name)
                         self.__items_black.remove(item.field_name)
 
+    #проверка на возможное взятие                     
     def __check_hitting(self):
         if self.__next_turn == 'white':
             self.__active_Wcheckers = []
@@ -578,37 +536,30 @@ class Playboard:
                 forward = self.__move_wcheckers(field)
                 back = list(map(lambda el: el + str(int(field[1]) - 1), DIRECTIONS[field[0]]))
                 near = forward + back
-                #print("field", field, "near", near)
                 for any_checker in near:
                     try:
-                        #print("any_checker[0]", any_checker[0], "HIT_DIRECTIONS[field[0]].keys()", HIT_DIRECTIONS[field[0]].keys())
                         if any_checker[0] in HIT_DIRECTIONS[field[0]].keys():
                             self.__jump_forward = HIT_DIRECTIONS[field[0]][any_checker[0]] + str(int(field[1]) + 2)
                             self.__jump_backward = HIT_DIRECTIONS[field[0]][any_checker[0]] + str(int(field[1]) - 2)
                             if any_checker in self.__items_black:
-                                #print("field", field, "чёрная шашка =", any_checker, "прыжок назад =", self.__jump_backward)
                                 if any_checker in forward and self.__jump_forward not in self.__items_black and\
                                         self.__jump_forward not in self.__items_white and\
                                         self.__jump_forward in FIELD:
-                                    print("Рядом с белой шашкой:", field, "есть чёрная шашка:", any_checker)
                                     self.__active_Wcheckers.append(field)
                                     self.__field = field
                                     self._Wforward_jump = 1
                                 if any_checker in back and self.__jump_backward not in self.__items_black and\
                                         self.__jump_backward not in self.__items_white and\
                                         self.__jump_backward in FIELD:
-                                    print("Рядом с белой шашкой:", field, "есть чёрная шашка:", any_checker)
                                     self.__active_Wcheckers.append(field)
                                     self.__field = field
                                     self._Wback_jump = 1
                     except Exception:
-                        #print("12345")
                         break
             if len(self.__active_Wcheckers) == 1:
                 self.__wCHECK = True
                 return self.__field
             elif len(self.__active_Wcheckers) >= 2:
-                print("self.__active_Wcheckers", self.__active_Wcheckers)
                 self.__wCHECK = True
                 return self.__active_Wcheckers
             else:
@@ -619,41 +570,34 @@ class Playboard:
                 forward = self.__move_bcheckers(field)
                 back = list(map(lambda el: el + str(int(field[1]) + 1), DIRECTIONS[field[0]]))
                 near = forward + back
-                #print("field", field, "near_forward", forward)
                 for any_checker in near:
                     try:
                         if any_checker[0] in HIT_DIRECTIONS[field[0]].keys():
                             self.__jump_forward = HIT_DIRECTIONS[field[0]][any_checker[0]] + str(int(field[1]) - 2)
                             self.__jump_backward = HIT_DIRECTIONS[field[0]][any_checker[0]] + str(int(field[1]) + 2)
                             if any_checker in self.__items_white:
-                                #print("field", field, "белая шашка =", any_checker, "прыжок назад =", self.__jump_backward)
                                 if any_checker in forward and self.__jump_forward not in self.__items_black and \
                                         self.__jump_forward not in self.__items_white and \
                                         self.__jump_forward in FIELD:
-                                    print("Рядом с чёрной шашкой:", field, "есть белая шашка:", any_checker)
                                     self.__active_Bcheckers.append(field)
                                     self.__field = field
-                                    #self._bjump = 1
                                 if any_checker in back and self.__jump_backward not in self.__items_black and \
                                         self.__jump_backward not in self.__items_white and \
                                         self.__jump_backward in FIELD:
-                                    print("Рядом с чёрной шашкой:", field, "есть белая шашка:", any_checker)
                                     self.__active_Bcheckers.append(field)
                                     self.__field = field
-                                    #self._bjump = 0
                     except Exception:
                         break
             if len(self.__active_Bcheckers) == 1:
                 self.__bCHECK = True
                 return self.__field
             elif len(self.__active_Bcheckers) >= 2:
-                print("self.__active_Wcheckers", self.__active_Wcheckers)
                 self.__bCHECK = True
                 return self.__active_Bcheckers
             else:
                 self.__bCHECK = False
-                #print("self._bjump", self._bjump)
 
+    #проверка на возможное взятие у дамки             
     def __qcheck_hitting(self):
         if self.__next_turn == 'white':
             self.__active_Wqueens = []
@@ -664,38 +608,28 @@ class Playboard:
                         try:
                             forward = self.__move_bcheckers(any_item)
                             back = list(map(lambda el: el + str(int(any_item[1]) + 1), DIRECTIONS[any_item[0]]))
-                            print("Рядом с белой шашкой:", field, "есть чёрная шашка:", any_item)
-                            print("2", back[0], back[1], forward[0], forward[1])
                             if any_item in self.__diagonal_1:
                                 if back[0] not in self.__items_black:
-                                    #print("1!")
                                     self.__diagonal = self.__diagonal_1
                                     self.Q = any_item
-                                    #self.__active_Wcheckers.append(field)
                                     self.__active_Wqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_2:
                                 if back[1] not in self.__items_black:
-                                    #print("2!")
                                     self.__diagonal = self.__diagonal_2
                                     self.Q = any_item
-                                    #self.__active_Wcheckers.append(field)
                                     self.__active_Wqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_3:
                                 if forward[0] not in self.__items_black:
-                                    #print("3!")
                                     self.__diagonal = self.__diagonal_3
                                     self.Q = any_item
-                                    #self.__active_Wcheckers.append(field)
                                     self.__active_Wqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_4:
                                 if forward[1] not in self.__items_black:
-                                    #print("4!")
                                     self.__diagonal = self.__diagonal_4
                                     self.Q = any_item
-                                    #self.__active_Wcheckers.append(field)
                                     self.__active_Wqueens.append(field)
                                     self.__field = field
                         except Exception:
@@ -719,38 +653,28 @@ class Playboard:
                         try:
                             forward = self.__move_wcheckers(any_item)
                             back = list(map(lambda el: el + str(int(any_item[1]) - 1), DIRECTIONS[any_item[0]]))
-                            print("Рядом с белой шашкой:", field, "есть чёрная шашка:", any_item)
-                            print("2", back[0], back[1], forward[0], forward[1])
                             if any_item in self.__diagonal_1:
                                 if back[0] not in self.__items_white:
-                                    #print("1!")
                                     self.__diagonal = self.__diagonal_1
                                     self.Q = any_item
-                                    #self.__active_Bcheckers.append(field)
                                     self.__active_Bqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_2:
                                 if back[1] not in self.__items_white:
-                                    #print("2!")
                                     self.__diagonal = self.__diagonal_2
                                     self.Q = any_item
-                                    #self.__active_Bcheckers.append(field)
                                     self.__active_Bqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_3:
                                 if forward[0] not in self.__items_white:
-                                    #print("3!")
                                     self.__diagonal = self.__diagonal_3
                                     self.Q = any_item
-                                    #self.__active_Bcheckers.append(field)
                                     self.__active_Bqueens.append(field)
                                     self.__field = field
                             elif any_item in self.__diagonal_4:
                                 if forward[1] not in self.__items_white:
-                                    #print("4!")
                                     self.__diagonal = self.__diagonal_4
                                     self.Q = any_item
-                                    #self.__active_Bcheckers.append(field)
                                     self.__active_Bqueens.append(field)
                                     self.__field = field
                         except Exception:
@@ -761,7 +685,6 @@ class Playboard:
                         if j == k:
                             self.__bqCHECK = False
                         else:
-                            print("self.__active_Bqueens", self.__active_Bqueens)
                             self.__bqCHECK = True
                             return self.__field
             else:
