@@ -210,7 +210,7 @@ class Playboard:
                 #если ход чёрных 
                 elif self.__next_turn == 'black' and self.__checker_colour == Checker2.icolour:
                     self.__CHECK_HITTING = self.__check_hitting()
-                    if self.__field_checker in self.__queens_white:
+                    if self.__field_checker in self.__queens_black:
                         variants = self.__move_queens(self.__field_checker)
                         self.__qCHECK_HITTING = self.__qcheck_hitting()
                         if self.__bqCHECK is True:
@@ -301,6 +301,9 @@ class Playboard:
         if self.__picked_checker.field_name in BLACK_QUEEN_FIELD and\
                 self.__field_checker not in self.__queens_black:
             self.__transform_to_queen(self.__picked_checker.field_name)
+        elif self.__field_checker in self.__queens_black:
+            self.__queens_black.remove(self.__field_checker)
+            self.__queens_black.append(cells.field_name)        
         if not self.__items_white:
             self.__white_win()
         if self.__bCHECK is True:
